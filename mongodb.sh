@@ -20,7 +20,7 @@ validate(){
     fi
 }
 
-cd mongod.repo /etc/yum.repos.d/mongo.repo
+cp mongod.repo /etc/yum.repos.d/mongo.repo
 validate $? "coping the monogod.repo file"
 
 dnf install mongodb-org -y &>>$log_file
