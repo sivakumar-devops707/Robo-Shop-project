@@ -1,3 +1,4 @@
+#!/bin/bash
 user=$(id -u)
 log_folder="/var/log/mysql-logs"
 log_file="/var/log/mysql-logs/$0.log"
