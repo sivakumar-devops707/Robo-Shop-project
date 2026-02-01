@@ -42,7 +42,7 @@ rm -rf /app/*
 
 validate $? "Removing existing code"
 
-curl -L -o /tmp/user.zip https://roboshop-artifacts.s3.amazonaws.com/cart-v3.zip &>>$log_file
+curl -L -o /tmp/cart.zip https://roboshop-artifacts.s3.amazonaws.com/cart-v3.zip &>>$log_file
 validate $? "downloading code from git"
 cd /app 
 validate $? "change directory"
