@@ -28,7 +28,7 @@ validate $? "enable nodejs"
 dnf install nodejs -y &>>$log_file
 validate $? "install nodejs"
 
-id roboshop &>>$LOGS_FILE
+id roboshop &>>$log_file
 echo $?
 if [ $? -ne 0 ]; then
      sudo useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$log_file
@@ -64,7 +64,7 @@ validate $? "start catalogue..."
 
 cp $SCRIPT_DIR/mongod.repo /etc/yum.repos.d/mongod.repo
 dnf install mongodb-mongosh -y &>>$log_file
-
+validate $? "install mongodb-mongosh..."
 INDEX=$(mongosh --host $MONGODB_HOST --quiet  --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
 
 if [ $INDEX -le 0 ]; then
