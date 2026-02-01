@@ -38,9 +38,9 @@ else
 fi
 mkdir -p /app 
 validate $? "creating app directory"
-rm -rf /app/*
+#rm -rf /app/*
 
-validate $? "Removing existing code"
+# validate $? "Removing existing code"
 
 
 
