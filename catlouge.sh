@@ -3,7 +3,7 @@
 user=$(id -u)
 log_folder="/var/log/catalouge-logs"
 log_file="/var/log/catalouge-logs/$0.log"
-
+SCRIPT_DIR=$PWD
 if [ $user -ne 0 ]; then
     echo "please run as sudo user / root user" | tee -a $log_file
    exit 1
@@ -27,9 +27,13 @@ validate $? "enable nodejs"
 dnf install nodejs -y &>>$log_file
 validate $? "install nodejs"
 
-useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$log_file
-validate $? "useradded...."
-
+id roboshop &>>$LOGS_FILE
+if [ $? -ne 0 ]; then
+    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOGS_FILE
+    VALIDATE $? "Creating system user"
+else
+    echo -"Roboshop user already exist ...  SKIPPING"
+fi
 mkdir /app 
 validate $? "creating app directory"
 
@@ -43,7 +47,7 @@ cd /app
 npm install &>>$log_file
 validate $? "npm install.."
 
-cp catalogue.service /etc/systemd/system/catalogue.service &>>$log_file
+cp $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service &>>$log_file
 validate $? "copying catalogue service..."
 
 systemctl daemon-reload &>>$log_file
