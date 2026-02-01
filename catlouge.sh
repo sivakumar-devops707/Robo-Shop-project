@@ -31,7 +31,7 @@ validate $? "install nodejs"
 id roboshop &>>$LOGS_FILE
 echo $?
 if [ $? -ne 0 ]; then
-     sudo useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOGS_FILE
+     sudo useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$log_file
     validate $? "Creating system user"
 else
     echo "Roboshop user already exist ...  SKIPPING"
@@ -63,19 +63,8 @@ systemctl start catalogue &>>$log_file
 validate $? "start catalogue..."
 
 cp $SCRIPT_DIR/mongod.repo /etc/yum.repos.d/mongod.repo
-dnf install mongodb-mongosh -y &>>$LOGS_FILE
+dnf install mongodb-mongosh -y &>>$log_file
 
-INDEX=$(mongosh --host $MONGODB_HOST --quiet  --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
-
-if [ $INDEX -le 0 ]; then
-    mongosh --host $MONGODB_HOST </app/db/master-data.js
-    validate $? "Loading products"
-else
-    echo -e "Products already loaded ... $Y SKIPPING $N"
-fi
-
-systemctl restart catalogue
- $? "Restarting catalogue"
 INDEX=$(mongosh --host $MONGODB_HOST --quiet  --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
 
 if [ $INDEX -le 0 ]; then
