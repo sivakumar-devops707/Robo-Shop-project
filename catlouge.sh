@@ -31,7 +31,7 @@ validate $? "install nodejs"
 id roboshop &>>$LOGS_FILE
 if [ $? -ne 0 ]; then
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOGS_FILE
-    VALIDATE $? "Creating system user"
+    validate $? "Creating system user"
 else
     echo -"Roboshop user already exist ...  SKIPPING"
 fi
@@ -39,7 +39,7 @@ mkdir -p /app
 validate $? "creating app directory"
 rm -rf /app/*
 
-VALIDATE $? "Removing existing code"
+validate $? "Removing existing code"
 
 curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>>$log_file
 validate $? "downloading code from git"
@@ -68,10 +68,21 @@ INDEX=$(mongosh --host $MONGODB_HOST --quiet  --eval 'db.getMongo().getDBNames()
 
 if [ $INDEX -le 0 ]; then
     mongosh --host $MONGODB_HOST </app/db/master-data.js
-    VALIDATE $? "Loading products"
+    validate $? "Loading products"
 else
     echo -e "Products already loaded ... $Y SKIPPING $N"
 fi
 
 systemctl restart catalogue
-VALIDATE $? "Restarting catalogue"
+ $? "Restarting catalogue"
+INDEX=$(mongosh --host $MONGODB_HOST --quiet  --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
+
+if [ $INDEX -le 0 ]; then
+    mongosh --host $MONGODB_HOST </app/db/master-data.js
+    validate $? "Loading products"
+else
+    echo -e "Products already loaded ... $Y SKIPPING $N"
+fi
+
+systemctl restart catalogue
+validate $? "Restarting catalogue"
