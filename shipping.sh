@@ -25,8 +25,8 @@ dnf module disable nodejs -y &>>$log_file
 dnf module enable nodejs:20 -y &>>$log_file
 validate $? "enable nodejs"
 
-dnf install nodejs -y &>>$log_file
-validate $? "install nodejs"
+dnf install maven -y &>>$log_file
+validate $? "install maven"
 
 id roboshop &>>$log_file
 
